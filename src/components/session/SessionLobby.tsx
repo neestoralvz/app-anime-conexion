@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
 import { Button } from '@/components/ui/Button';
@@ -9,10 +9,37 @@ import { useSessionActions } from '@/hooks/useSessionActions';
 
 export function SessionLobby() {
   const router = useRouter();
-  const { state } = useSession();
+  const { state, dispatch } = useSession();
   const { leaveSession } = useSessionActions();
   const session = state.session;
   const currentUser = state.currentUser;
+  const [isSimulatingJoin, setIsSimulatingJoin] = useState(false);
+
+  // Escuchar por actualizaciones de sesión desde el mock service
+  useEffect(() => {
+    const handleSessionUpdate = (event: CustomEvent) => {
+      const { sessionId, session: updatedSession } = event.detail;
+      if (session && session.id === sessionId) {
+        dispatch({
+          type: 'SET_SESSION',
+          payload: updatedSession
+        });
+        setIsSimulatingJoin(false);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('sessionUpdated', handleSessionUpdate as EventListener);
+      return () => window.removeEventListener('sessionUpdated', handleSessionUpdate as EventListener);
+    }
+  }, [session, currentUser, dispatch]);
+
+  // Iniciar simulación cuando solo hay 1 usuario
+  useEffect(() => {
+    if (session && session.users?.length === 1 && !isSimulatingJoin) {
+      setIsSimulatingJoin(true);
+    }
+  }, [session, isSimulatingJoin]);
 
   // Auto-navegar a selección cuando la sesión esté lista
   useEffect(() => {
@@ -116,6 +143,16 @@ export function SessionLobby() {
                 <p>
                   <strong>2.</strong> Una vez que se una, podrán comenzar a seleccionar animes
                 </p>
+                {isSimulatingJoin && (
+                  <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                      <span className="text-blue-700 text-sm font-medium">
+                        Simulando llegada de segundo jugador...
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

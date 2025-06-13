@@ -46,6 +46,11 @@ class MockSessionService {
     this.sessions.set(sessionId, newSession);
     this.sessionsByCode.set(sessionCode, sessionId);
 
+    // Simular que se une automáticamente un segundo usuario después de 3 segundos
+    setTimeout(async () => {
+      await this.simulateSecondUserJoin(sessionId);
+    }, 3000);
+
     return {
       session: newSession,
       currentUser: newUser,
@@ -158,6 +163,38 @@ class MockSessionService {
     }
 
     return this.getSession(sessionId);
+  }
+
+  // Simular que se une automáticamente un segundo usuario
+  private async simulateSecondUserJoin(sessionId: string): Promise<void> {
+    const session = this.sessions.get(sessionId);
+    if (!session || session.users.length >= session.maxUsers) {
+      return;
+    }
+
+    // Crear segundo usuario simulado
+    const simulatedUser: SessionUser = {
+      id: generateMockId(),
+      sessionId,
+      userId: generateMockId(),
+      nickname: 'AnimeLover123', // Usuario simulado para demo
+      isReady: false,
+      joinedAt: new Date(),
+    };
+
+    session.users.push(simulatedUser);
+    session.status = SessionStatus.ACTIVE; // Activar sesión cuando se llena
+    session.updatedAt = new Date();
+
+    this.sessions.set(sessionId, session);
+
+    // Disparar evento personalizado para notificar a los componentes que escuchan
+    if (typeof window !== 'undefined') {
+      const event = new CustomEvent('sessionUpdated', {
+        detail: { sessionId, session }
+      });
+      window.dispatchEvent(event);
+    }
   }
 }
 
