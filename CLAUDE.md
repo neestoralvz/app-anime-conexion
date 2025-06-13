@@ -13,36 +13,9 @@ App Anime Conexión is a collaborative anime selection web application that help
 - **Deployment**: Vercel (Production) - https://app-anime-henna.vercel.app
 - **Development**: ESLint, Prettier, TypeScript strict mode
 
-## Architecture
-
-### Core Game Flow
-1. **SELECTION**: Users privately select 3 animes and self-rate them (3 questions, 1-4 scale)
-2. **MATCHING**: System checks for direct matches between selections  
-3. **RATING**: Users rate each other's non-matching animes using same criteria
-4. **RESULTS**: Calculate winner using combined scores + "Gold Filter" (question 3 = 1 discards)
-
-### Project Structure
-```
-src/
-├── app/           # Next.js App Router pages and layouts
-├── components/    # React components (PascalCase.tsx)
-├── hooks/         # Custom hooks (usePascalCase.ts)
-├── lib/           # Shared libraries and configurations
-├── services/      # API clients and business logic (camelCase.ts)
-├── types/         # TypeScript definitions (camelCase.ts)
-├── utils/         # Helper functions (camelCase.ts)
-└── constants/     # App constants (camelCase.ts)
-```
-
-### Database Schema (Prisma)
-Key models: `Anime`, `Session`, `SessionUser`, `Selection`, `Rating`
-- Sessions have unique codes for joining
-- Game phases: SELECTION → MATCHING → RATING → RESULTS
-- Session status: WAITING → ACTIVE → COMPLETED → EXPIRED
-
 ## Development Commands
 
-### Setup
+### Quick Start
 ```bash
 npm install
 npx prisma generate
@@ -59,7 +32,7 @@ npm run db:studio         # Open Prisma Studio GUI at localhost:5555
 npm run db:reset          # Reset database (destructive)
 ```
 
-### Development
+### Development Workflow
 ```bash
 npm run dev                # Start development server at localhost:3000
 npm run build             # Build for production
@@ -68,6 +41,60 @@ npm run lint              # Run ESLint
 npm run lint:fix          # Fix linting issues
 npm run type-check        # TypeScript validation
 ```
+
+## Architecture
+
+### Core Game Flow
+1. **SELECTION**: Users privately select 3 animes and self-rate them (3 questions, 1-4 scale)
+2. **MATCHING**: System checks for direct matches between selections  
+3. **RATING**: Users rate each other's non-matching animes using same criteria
+4. **RESULTS**: Calculate winner using combined scores + "Gold Filter" (question 3 = 1 discards)
+
+### State Management Architecture
+The application uses a centralized state management approach:
+
+- **SessionContext**: Global state using useReducer pattern
+- **State Structure**: `{ session, currentUser, selectedAnimes, selfRatings, crossRatings, isLoading, error, currentPhase }`
+- **Actions**: Typed actions for state updates (SET_SESSION, SET_LOADING, etc.)
+- **Provider**: Wraps entire app in `src/app/layout.tsx`
+
+### Component Architecture
+Components are organized in three categories:
+
+#### UI Components (`src/components/ui/`)
+- **Button**: 4 variants (primary, secondary, success, danger) with 3 sizes
+- **Input**: Form inputs with label, error, and helper text support
+- **Card**: Modular card system (Card, CardHeader, CardTitle, CardContent)
+
+#### Layout Components (`src/components/layout/`)  
+- **Layout**: Main page container with configurable max-width
+- **PageHeader**: Standardized page titles and subtitles
+- **LoadingSpinner**: Loading indicators with size variants
+
+#### Game Components (`src/components/game/`)
+- **AnimeCard**: Displays anime info with genre tags and selection state
+- **RatingStars**: Interactive 1-4 star rating component
+- **SessionCode**: Displays session codes with copy functionality
+
+### Database Schema (Prisma)
+Key models: `Anime`, `Session`, `SessionUser`, `Selection`, `Rating`
+- Sessions have unique 6-character alphanumeric codes
+- Game phases: SELECTION → MATCHING → RATING → RESULTS
+- Session status: WAITING → ACTIVE → COMPLETED → EXPIRED
+- Rating system: 3 questions per anime, 1-4 scale
+
+## Type System Architecture
+
+### Prisma-First Approach
+- All base types imported from `@prisma/client`
+- Custom types derived using TypeScript utilities (Pick, Omit, etc.)
+- Enum values use Prisma-generated enums for consistency
+
+### Key Type Patterns
+- **Relations**: `AnimeWithSelections`, `SessionWithUsers`
+- **Form Data**: `CreateSessionData`, `JoinSessionData`, `RatingFormData`
+- **UI Types**: Derived types for specific component needs
+- **Helper Functions**: `getSessionStatusLabel()`, `getGamePhaseLabel()`
 
 ## Business Logic Key Points
 
@@ -84,21 +111,27 @@ Each anime gets 3 questions (1-4 scale):
 
 ### Session Management
 - Sessions expire after 24 hours
-- Unique 6-character alphanumeric codes for joining
 - 2-user sessions only (extensible to groups later)
+- Real-time state synchronization (future: Socket.io)
 
-## Type System Architecture
+## Implementation Status
 
-### Prisma-First Approach
-- All base types are imported from `@prisma/client`
-- Custom types are derived using TypeScript utilities (Pick, Omit, etc.)
-- Enum values use Prisma-generated enums for consistency
+### Completed Tasks (Sprint 1)
+- ✅ **S1-001**: Base project configuration (Next.js, TypeScript, Tailwind)
+- ✅ **S1-002**: Database configuration (Prisma, SQLite, 20 anime seed data)
+- ✅ **S1-003**: Component structure (13 components, SessionContext, utilities)
 
-### Key Type Patterns
-- `AnimeWithSelections`, `SessionWithUsers` - For relations
-- `CreateSessionData`, `JoinSessionData` - For form inputs
-- `RatingFormData` - For rating submissions
-- Helper functions: `getSessionStatusLabel()`, `getGamePhaseLabel()`
+### Next Tasks
+- **S1-004**: Backend de sesiones (API endpoints)
+- **S1-005**: Frontend de sesiones (UI/UX)
+- **S1-006**: Setup animes y búsqueda
+- **S1-007-010**: Selection, rating, calculation, and results systems
+
+### Current Architecture Ready For
+- API endpoint implementation (Prisma client configured)
+- Component composition (base UI system implemented)
+- State management (SessionContext with reducer ready)
+- Form validation (utility functions implemented)
 
 ## Coding Conventions
 
@@ -115,17 +148,10 @@ Each anime gets 3 questions (1-4 scale):
 - Type definitions in dedicated `types/` files organized by domain
 - Import aliases configured (`@/*` maps to `src/*`)
 
-## Implementation Status
-
-### Completed Tasks (Sprint 1)
-- ✅ S1-001: Base project configuration (Next.js, TypeScript, Tailwind)
-- ✅ S1-002: Database configuration (Prisma, SQLite, seed data)
-
-### Current Architecture Decisions
-- SQLite for development (no external dependencies)
-- Vercel for deployment (100% free tier)
-- Type-safe database access through Prisma
-- Component-first development approach
+### Utilities
+- **cn()**: Combines clsx and tailwind-merge for className utilities
+- **Validation**: Functions for rating, session codes, nicknames
+- **Constants**: Game configuration and rating questions in Spanish
 
 ## Key Constraints
 
@@ -133,18 +159,6 @@ Each anime gets 3 questions (1-4 scale):
 - **Scope**: 2-user sessions only (extensible to groups later)
 - **Performance**: < 3 second load times, works on mobile
 - **Pragmatic**: Avoid over-engineering, prioritize shipping
-
-## Implementation Tasks
-
-Detailed implementation tasks available in `/docs/tasks/` folder:
-- `s1-001-configurar-proyecto-base.md` - ✅ Complete Next.js setup with TypeScript/Tailwind
-- `s1-002-configurar-base-datos.md` - ✅ Prisma ORM setup with database schema
-- `s1-003-organizar-estructura-componentes.md` - Project structure and base components
-- `s1-004-backend-sesiones.md` - Session management API endpoints
-- `s1-005-frontend-sesiones.md` - Session UI components and forms
-- `s1-009-logica-negocio.md` - Game engine and results calculation
-
-Each task includes step-by-step implementation details, code examples, validation criteria, and commit messages.
 
 ## Git Workflow
 
@@ -162,6 +176,11 @@ All commits include Claude Code attribution:
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-## Documentation
+## Implementation Tasks Reference
 
-Comprehensive docs in `/docs/` folder with sprint plans, architecture decisions, and coding standards. Reference `docs/00-project-analysis-report.md` for detailed project status and `docs/sprint-01-mvp-core.md` for current implementation roadmap.
+Detailed task specifications in `/docs/tasks/` folder with step-by-step implementation guides. Current progress tracked in `/docs/verificacion-sprint-1-progreso.md` and `/docs/sprint-01-mvp-core.md`.
+
+Key documents:
+- `docs/sprint-01-mvp-core.md` - Sprint roadmap with task breakdown
+- `docs/verificacion-sprint-1-progreso.md` - Detailed progress verification
+- `docs/00-project-analysis-report.md` - Complete project analysis
