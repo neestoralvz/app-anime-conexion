@@ -1,16 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useSessionActions } from '@/hooks/useSessionActions';
 
 export function SessionLobby() {
+  const router = useRouter();
   const { state } = useSession();
   const { leaveSession } = useSessionActions();
   const session = state.session;
   const currentUser = state.currentUser;
+
+  // Auto-navegar a selección cuando la sesión esté lista
+  useEffect(() => {
+    if (session && session.status === 'ACTIVE' && session.users?.length >= 2) {
+      const timer = setTimeout(() => {
+        router.push(`/session/${session.id}/selection`);
+      }, 3000); // 3 segundos de delay para mostrar el mensaje
+
+      return () => clearTimeout(timer);
+    }
+  }, [session, router]);
 
   if (!session || !currentUser) {
     return (
@@ -115,9 +128,16 @@ export function SessionLobby() {
               <p className="text-green-800 text-sm mb-3">
                 El juego comenzará automáticamente en unos segundos...
               </p>
-              <div className="animate-pulse text-green-600">
+              <div className="animate-pulse text-green-600 mb-4">
                 Preparando la selección de animes...
               </div>
+              <Button
+                onClick={() => router.push(`/session/${session.id}/selection`)}
+                size="sm"
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Comenzar Ahora →
+              </Button>
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import { ApiResponse, SessionWithUsers, SessionUser } from '@/types';
+import { mockSessionService } from './mockSessionService';
 
 export interface CreateSessionRequest {
   nickname: string;
@@ -16,8 +17,13 @@ export interface SessionResponse {
 
 class SessionService {
   private baseUrl = '/api/sessions';
+  private isDemoMode = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
   async createSession(data: CreateSessionRequest): Promise<SessionResponse> {
+    // Usar mock service en modo demo
+    if (this.isDemoMode) {
+      return mockSessionService.createSession(data);
+    }
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
@@ -36,6 +42,10 @@ class SessionService {
   }
 
   async joinSession(data: JoinSessionRequest): Promise<SessionResponse> {
+    // Usar mock service en modo demo
+    if (this.isDemoMode) {
+      return mockSessionService.joinSession(data);
+    }
     const response = await fetch(`${this.baseUrl}/join`, {
       method: 'POST',
       headers: {
@@ -54,6 +64,10 @@ class SessionService {
   }
 
   async getSession(sessionId: string): Promise<SessionWithUsers> {
+    // Usar mock service en modo demo
+    if (this.isDemoMode) {
+      return mockSessionService.getSession(sessionId);
+    }
     const response = await fetch(`${this.baseUrl}/${sessionId}`);
     
     const result: ApiResponse<SessionWithUsers> = await response.json();
