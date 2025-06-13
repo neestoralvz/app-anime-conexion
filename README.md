@@ -2,6 +2,10 @@
 
 A collaborative anime selection web application that helps couples choose anime to watch together through a gamified rating system.
 
+## 🌐 Live Demo
+
+**Production URL**: [https://app-anime-henna.vercel.app](https://app-anime-henna.vercel.app)
+
 ## Quick Start
 
 ```bash
@@ -9,11 +13,12 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Open [http://localhost:3000](http://localhost:3000) to view the application locally.
 
 ## Technology Stack
 
 - **Frontend**: Next.js 14 with App Router, TypeScript, Tailwind CSS
+- **Deployment**: Vercel (Production)
 - **Development**: ESLint, Prettier, TypeScript strict mode
 
 ## Available Scripts
