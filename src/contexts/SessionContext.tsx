@@ -1,11 +1,11 @@
 'use client';
 
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import { Session, SessionUser, Anime, RatingFormData, GamePhase } from '@/types';
+import { SessionWithUsers, SessionUser, Anime, RatingFormData, GamePhase } from '@/types';
 
 interface SessionState {
   // Estado de sesión
-  session: Session | null;
+  session: SessionWithUsers | null;
   currentUser: SessionUser | null;
   isConnected: boolean;
   
@@ -26,7 +26,7 @@ interface SessionContextType {
 }
 
 type SessionAction =
-  | { type: 'SET_SESSION'; payload: Session }
+  | { type: 'SET_SESSION'; payload: SessionWithUsers }
   | { type: 'SET_CURRENT_USER'; payload: SessionUser }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }

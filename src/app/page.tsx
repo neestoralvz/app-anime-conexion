@@ -1,8 +1,63 @@
+'use client';
+
+import { useState } from 'react';
 import { Layout, PageHeader } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
+import { CreateSessionForm } from '@/components/session/CreateSessionForm';
+import { JoinSessionForm } from '@/components/session/JoinSessionForm';
 
 export default function HomePage() {
+  const [mode, setMode] = useState<'home' | 'create' | 'join'>('home');
+
+  if (mode === 'create') {
+    return (
+      <Layout maxWidth="md">
+        <PageHeader
+          title="Crear Nueva Sesión"
+          subtitle="Crea una sesión para invitar a tu compañero"
+        />
+        
+        <Card>
+          <CardContent>
+            <CreateSessionForm />
+            
+            <button
+              onClick={() => setMode('home')}
+              className="w-full mt-6 text-center text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              ← Volver al inicio
+            </button>
+          </CardContent>
+        </Card>
+      </Layout>
+    );
+  }
+
+  if (mode === 'join') {
+    return (
+      <Layout maxWidth="md">
+        <PageHeader
+          title="Unirse a Sesión"
+          subtitle="Ingresa el código de la sesión existente"
+        />
+        
+        <Card>
+          <CardContent>
+            <JoinSessionForm />
+            
+            <button
+              onClick={() => setMode('home')}
+              className="w-full mt-6 text-center text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              ← Volver al inicio
+            </button>
+          </CardContent>
+        </Card>
+      </Layout>
+    );
+  }
+
   return (
     <Layout maxWidth="md">
       <PageHeader
@@ -17,10 +72,19 @@ export default function HomePage() {
           </p>
           
           <div className="space-y-3">
-            <Button className="w-full" size="lg">
+            <Button 
+              className="w-full" 
+              size="lg"
+              onClick={() => setMode('create')}
+            >
               Crear Nueva Sesión
             </Button>
-            <Button variant="secondary" className="w-full" size="lg">
+            <Button 
+              variant="secondary" 
+              className="w-full" 
+              size="lg"
+              onClick={() => setMode('join')}
+            >
               Unirse a Sesión
             </Button>
           </div>
