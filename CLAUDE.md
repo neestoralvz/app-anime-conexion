@@ -10,7 +10,7 @@ App Anime Conexión is a collaborative anime selection web application that help
 
 - **Frontend**: Next.js 14 with App Router, TypeScript, Tailwind CSS
 - **Database**: Prisma ORM with SQLite (development), PostgreSQL (production)
-- **Deployment**: Vercel (Production) - https://app-anime-henna.vercel.app
+- **Deployment**: Vercel (Production) - https://app-anime-conexion.vercel.app
 - **Development**: ESLint, Prettier, TypeScript strict mode
 
 ## Development Commands
