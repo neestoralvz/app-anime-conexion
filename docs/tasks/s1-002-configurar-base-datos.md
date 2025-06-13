@@ -7,12 +7,12 @@
 Configurar Prisma ORM con SQLite para desarrollo y definir el schema inicial de la base de datos según las especificaciones del proyecto.
 
 ## Criterios de Aceptación
-- [ ] Prisma instalado y configurado
-- [ ] Schema inicial creado con todos los modelos
-- [ ] Primera migración ejecutada exitosamente
-- [ ] Prisma Client generado
-- [ ] Seed script básico funcionando
-- [ ] Prisma Studio accesible
+- [x] Prisma instalado y configurado
+- [x] Schema inicial creado con todos los modelos
+- [x] Primera migración ejecutada exitosamente
+- [x] Prisma Client generado
+- [x] Seed script básico funcionando
+- [x] Prisma Studio accesible
 
 ## Pasos de Implementación
 
@@ -269,11 +269,12 @@ npm run db:seed
 ```
 
 ## Validación
-- [ ] `npx prisma studio` abre interface web
-- [ ] Base de datos contiene tablas creadas
-- [ ] Seed script ejecuta sin errores
-- [ ] `npx prisma generate` funciona correctamente
-- [ ] Archivo `dev.db` existe en prisma/
+- [x] `npx prisma studio` abre interface web
+- [x] Base de datos contiene tablas creadas
+- [x] Seed script ejecuta sin errores
+- [x] `npx prisma generate` funciona correctamente
+- [x] Archivo `dev.db` existe en prisma/
+- [x] **BONUS**: 20 animes poblados en la base de datos
 
 ## Archivos a Crear/Modificar
 - `prisma/schema.prisma` (schema completo)

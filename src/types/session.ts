@@ -1,8 +1,12 @@
+import { SessionStatus, GamePhase } from '@prisma/client';
+
 export interface Session {
   id: string;
   code: string;
-  status: 'WAITING' | 'ACTIVE' | 'COMPLETED' | 'EXPIRED';
-  phase: 'SELECTION' | 'MATCHING' | 'RATING' | 'RESULTS';
+  status: SessionStatus;
+  phase: GamePhase;
+  maxUsers: number;
+  expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -10,7 +14,8 @@ export interface Session {
 export interface SessionUser {
   id: string;
   sessionId: string;
-  name: string;
-  isCreator: boolean;
+  userId: string;
+  nickname: string;
+  isReady: boolean;
   joinedAt: Date;
 }

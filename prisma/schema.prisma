@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Anime {
+  id          String   @id @default(cuid())
+  title       String
+  synopsis    String
+  genre       String
+  year        Int?
+  imageUrl    String?  @map("image_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relaciones
+  selections  Selection[]
+  ratings     Rating[]
+  
+  @@map("animes")
+}
+
+model Session {
+  id          String        @id @default(cuid())
+  code        String        @unique
+  status      SessionStatus @default(WAITING)
+  phase       GamePhase     @default(SELECTION)
+  maxUsers    Int           @default(2)
+  expiresAt   DateTime      @map("expires_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  
+  // Relaciones
+  users       SessionUser[]
+  selections  Selection[]
+  ratings     Rating[]
+  
+  @@map("sessions")
+}
+
+model SessionUser {
+  id          String   @id @default(cuid())
+  sessionId   String   @map("session_id")
+  userId      String   @map("user_id")
+  nickname    String
+  isReady     Boolean  @default(false) @map("is_ready")
+  joinedAt    DateTime @default(now()) @map("joined_at")
+  
+  // Relaciones
+  session     Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  selections  Selection[]
+  ratings     Rating[]
+  
+  @@unique([sessionId, userId])
+  @@map("session_users")
+}
+
+model Selection {
+  id          String   @id @default(cuid())
+  sessionId   String   @map("session_id")
+  userId      String   @map("user_id")
+  animeId     String   @map("anime_id")
+  orderNum    Int      @map("order_num") // 1, 2, 3
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // Relaciones
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user        SessionUser @relation(fields: [sessionId, userId], references: [sessionId, userId], onDelete: Cascade)
+  anime       Anime       @relation(fields: [animeId], references: [id])
+  
+  @@unique([sessionId, userId, orderNum])
+  @@unique([sessionId, userId, animeId])
+  @@map("selections")
+}
+
+model Rating {
+  id          String   @id @default(cuid())
+  sessionId   String   @map("session_id")
+  userId      String   @map("user_id")
+  animeId     String   @map("anime_id")
+  question1   Int      @map("question_1") // 1-4: Potencial de historia
+  question2   Int      @map("question_2") // 1-4: Mood personal
+  question3   Int      @map("question_3") // 1-4: Impulso de decisión
+  isSelfRating Boolean @map("is_self")    // true: auto-calificación, false: calificación cruzada
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // Relaciones
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user        SessionUser @relation(fields: [sessionId, userId], references: [sessionId, userId], onDelete: Cascade)
+  anime       Anime       @relation(fields: [animeId], references: [id])
+  
+  @@unique([sessionId, userId, animeId, isSelfRating])
+  @@map("ratings")
+}
+
+enum SessionStatus {
+  WAITING     // Esperando usuarios
+  ACTIVE      // Juego en progreso
+  COMPLETED   // Terminado
+  EXPIRED     // Expirado
+}
+
+enum GamePhase {
+  SELECTION   // Fase 1: Selección secreta
+  MATCHING    // Fase 2: Detección de coincidencias
+  RATING      // Fase 3: Evaluación cruzada
+  RESULTS     // Mostrar resultados
+}

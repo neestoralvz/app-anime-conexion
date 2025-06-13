@@ -1,12 +1,12 @@
 export interface Anime {
   id: string;
   title: string;
-  description: string;
-  genre: string[];
-  year: number;
-  episodes: number;
-  imageUrl?: string;
-  source: string;
+  synopsis: string;
+  genre: string;
+  year: number | null;
+  imageUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Selection {
@@ -14,12 +14,18 @@ export interface Selection {
   sessionId: string;
   userId: string;
   animeId: string;
-  selfRating: Rating;
+  orderNum: number;
   createdAt: Date;
 }
 
 export interface Rating {
-  storyIntrigue: number;
-  moodAlignment: number;
-  immediateDesire: number;
+  id: string;
+  sessionId: string;
+  userId: string;
+  animeId: string;
+  question1: number; // 1-4: Potencial de historia
+  question2: number; // 1-4: Mood personal
+  question3: number; // 1-4: Impulso de decisión
+  isSelfRating: boolean;
+  createdAt: Date;
 }
