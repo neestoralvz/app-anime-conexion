@@ -9,10 +9,9 @@ App Anime Conexión is a collaborative anime selection web application that help
 ## Technology Stack
 
 - **Frontend**: Next.js 14 with App Router, TypeScript, Tailwind CSS
-- **Backend**: Node.js with Express.js, Prisma ORM
-- **Database**: SQLite (development), PostgreSQL (production)
-- **Hosting**: Vercel (frontend), Render (backend + database) - 100% free tier
-- **Real-time**: Socket.io for session management
+- **Database**: Prisma ORM with SQLite (development), PostgreSQL (production)
+- **Deployment**: Vercel (Production) - https://app-anime-henna.vercel.app
+- **Development**: ESLint, Prettier, TypeScript strict mode
 
 ## Architecture
 
@@ -25,9 +24,10 @@ App Anime Conexión is a collaborative anime selection web application that help
 ### Project Structure
 ```
 src/
-├── components/     # React components (PascalCase.tsx)
-├── pages/         # Next.js pages (PascalCase.tsx) 
-├── hooks/         # Custom hooks (use + PascalCase.ts)
+├── app/           # Next.js App Router pages and layouts
+├── components/    # React components (PascalCase.tsx)
+├── hooks/         # Custom hooks (usePascalCase.ts)
+├── lib/           # Shared libraries and configurations
 ├── services/      # API clients and business logic (camelCase.ts)
 ├── types/         # TypeScript definitions (camelCase.ts)
 ├── utils/         # Helper functions (camelCase.ts)
@@ -52,44 +52,22 @@ npm run dev
 
 ### Database Operations
 ```bash
-npx prisma studio          # Open database GUI
-npx prisma migrate dev      # Run migrations  
-npx prisma db seed         # Seed anime data
-npx prisma migrate reset   # Reset database
 npm run db:generate        # Generate Prisma client
-npm run db:migrate         # Run migrations (alias)
-npm run db:seed           # Run seed script (alias)
-npm run db:studio         # Open Prisma Studio (alias)
-npm run db:reset          # Reset database (alias)
+npm run db:migrate         # Run migrations
+npm run db:seed           # Populate with 20 anime records
+npm run db:studio         # Open Prisma Studio GUI at localhost:5555
+npm run db:reset          # Reset database (destructive)
 ```
 
 ### Development
 ```bash
-npm run dev                # Start development server
+npm run dev                # Start development server at localhost:3000
 npm run build             # Build for production
 npm run start             # Start production server
 npm run lint              # Run ESLint
 npm run lint:fix          # Fix linting issues
 npm run type-check        # TypeScript validation
 ```
-
-### Testing
-```bash
-npm run test              # Run all tests
-npm run test:watch        # Run tests in watch mode
-npm run test:coverage     # Generate coverage report
-npm test -- ComponentName # Run specific test
-```
-
-## API Endpoints
-
-Core endpoints following RESTful conventions:
-- `POST /api/sessions` - Create new session
-- `POST /api/sessions/join` - Join existing session  
-- `PUT /api/sessions/:id/selections` - Submit anime selections
-- `POST /api/sessions/:id/ratings` - Submit ratings
-- `GET /api/sessions/:id/results` - Get game results
-- `GET /api/animes/search` - Search anime database
 
 ## Business Logic Key Points
 
@@ -105,44 +83,49 @@ Each anime gets 3 questions (1-4 scale):
 - Winner: Highest total score that passes Gold Filter
 
 ### Session Management
-- Sessions expire after set time
-- Real-time updates via Socket.io rooms
-- State persistence in localStorage for reconnection
+- Sessions expire after 24 hours
+- Unique 6-character alphanumeric codes for joining
+- 2-user sessions only (extensible to groups later)
+
+## Type System Architecture
+
+### Prisma-First Approach
+- All base types are imported from `@prisma/client`
+- Custom types are derived using TypeScript utilities (Pick, Omit, etc.)
+- Enum values use Prisma-generated enums for consistency
+
+### Key Type Patterns
+- `AnimeWithSelections`, `SessionWithUsers` - For relations
+- `CreateSessionData`, `JoinSessionData` - For form inputs
+- `RatingFormData` - For rating submissions
+- Helper functions: `getSessionStatusLabel()`, `getGamePhaseLabel()`
 
 ## Coding Conventions
 
 ### Naming
 - Components: `PascalCase.tsx` (AnimeCard, RatingForm)
-- Hooks: `use + PascalCase.ts` (useSession, useAnimeSelection)  
+- Hooks: `usePascalCase.ts` (useSession, useAnimeSelection)  
 - Services: `camelCase.ts` (animeService, sessionService)
 - Database: `snake_case` tables and fields
 - CSS: `kebab-case` classes
 
 ### TypeScript
 - Strict mode enabled
-- Interface definitions in dedicated `types/` files
-- Zod schemas for API validation
-- Prisma client for type-safe database access
+- Prisma-generated types as source of truth
+- Type definitions in dedicated `types/` files organized by domain
+- Import aliases configured (`@/*` maps to `src/*`)
 
-## Development Workflow
+## Implementation Status
 
-### Sprint Structure
-Project organized in 4 sprints with detailed task breakdowns:
-1. **Sprint 1**: MVP Core (11 days + 1 buffer) - Complete game flow implementation
-2. **Sprint 2**: UX/UI Enhancement (10 days) - Design system and user experience
-3. **Sprint 3**: Robustness (12 days + 2 buffer) - Testing, performance, deployment
-4. **Sprint 4**: Advanced Features (10 days) - User profiles, history, personalization
+### Completed Tasks (Sprint 1)
+- ✅ S1-001: Base project configuration (Next.js, TypeScript, Tailwind)
+- ✅ S1-002: Database configuration (Prisma, SQLite, seed data)
 
-Current status: Pre-implementation with complete task specifications in `/docs/tasks/`
-
-### Git Workflow
-Each feature includes structured commits:
-- `feat:` for new functionality
-- `fix:` for bug fixes  
-- `refactor:` for code improvements
-- `test:` for testing additions
-- `docs:` for documentation
-- `chore:` for maintenance
+### Current Architecture Decisions
+- SQLite for development (no external dependencies)
+- Vercel for deployment (100% free tier)
+- Type-safe database access through Prisma
+- Component-first development approach
 
 ## Key Constraints
 
@@ -154,14 +137,30 @@ Each feature includes structured commits:
 ## Implementation Tasks
 
 Detailed implementation tasks available in `/docs/tasks/` folder:
-- `s1-001-configurar-proyecto-base.md` - Complete Next.js setup with TypeScript/Tailwind
-- `s1-002-configurar-base-datos.md` - Prisma ORM setup with database schema
+- `s1-001-configurar-proyecto-base.md` - ✅ Complete Next.js setup with TypeScript/Tailwind
+- `s1-002-configurar-base-datos.md` - ✅ Prisma ORM setup with database schema
 - `s1-003-organizar-estructura-componentes.md` - Project structure and base components
 - `s1-004-backend-sesiones.md` - Session management API endpoints
 - `s1-005-frontend-sesiones.md` - Session UI components and forms
 - `s1-009-logica-negocio.md` - Game engine and results calculation
 
 Each task includes step-by-step implementation details, code examples, validation criteria, and commit messages.
+
+## Git Workflow
+
+Each feature includes structured commits:
+- `feat:` for new functionality
+- `fix:` for bug fixes  
+- `refactor:` for code improvements
+- `test:` for testing additions
+- `docs:` for documentation
+- `chore:` for maintenance
+
+All commits include Claude Code attribution:
+```
+🤖 Generated with [Claude Code](https://claude.ai/code)
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
 
 ## Documentation
 
