@@ -12,29 +12,33 @@
 
 ### Semana 1: Fundaciones
 
-#### Día 1-2: Setup y Configuración Inicial
-**Tarea S1-001: Configurar proyecto base**
-- [ ] Crear repositorio en GitHub
-- [ ] Setup Next.js 14 con TypeScript
-- [ ] Configurar Tailwind CSS
-- [ ] Setup ESLint + Prettier
-- [ ] Configurar estructura de carpetas según convenciones
-- [ ] **Commit**: "feat: initial project setup with Next.js, TypeScript, and Tailwind"
+#### Día 1-2: Setup y Configuración Inicial ✅
+**Tarea S1-001: Configurar proyecto base** ✅
+- [x] Crear repositorio en GitHub
+- [x] Setup Next.js 14 con TypeScript
+- [x] Configurar Tailwind CSS
+- [x] Setup ESLint + Prettier
+- [x] Configurar estructura de carpetas según convenciones
+- [x] **Commit**: "feat: initial project setup with Next.js, TypeScript, and Tailwind"
+- [x] **BONUS**: Aplicación desplegada en Vercel: https://app-anime-henna.vercel.app
 
-**Tarea S1-002: Configurar base de datos**
-- [ ] Setup Prisma con SQLite local
-- [ ] Crear schema inicial (Anime, Session, SessionUser, Selection, Rating)
-- [ ] Ejecutar primera migración
-- [ ] **Commit**: "feat: setup Prisma with initial database schema"
+**Tarea S1-002: Configurar base de datos** ✅
+- [x] Setup Prisma con SQLite local
+- [x] Crear schema inicial (Anime, Session, SessionUser, Selection, Rating)
+- [x] Ejecutar primera migración
+- [x] **Commit**: "feat: setup Prisma with initial database schema"
+- [x] **BONUS**: Seed script con 20 animes poblados
 
-#### Día 3: Estructura del Proyecto
-**Tarea S1-003: Organizar estructura y componentes base**
-- [ ] Crear estructura de carpetas completa
-- [ ] Implementar componentes base (Layout, Button, Input)
-- [ ] Setup de Context para estado global
-- [ ] Configurar rutas principales
-- [ ] **Limpieza**: Remover archivos default de Next.js no utilizados
-- [ ] **Commit**: "feat: project structure and base components"
+#### Día 3: Estructura del Proyecto ✅
+**Tarea S1-003: Organizar estructura y componentes base** ✅
+- [x] Crear estructura de carpetas completa
+- [x] Implementar componentes base (Layout, Button, Input)
+- [x] Setup de Context para estado global
+- [x] Configurar rutas principales
+- [x] **Limpieza**: Remover archivos default de Next.js no utilizados
+- [x] **Commit**: "feat: project structure and base components"
+- [x] **BONUS**: Componentes adicionales (Card, AnimeCard, RatingStars, SessionCode)
+- [x] **BONUS**: Sistema de utilidades (cn, validation) y constants actualizadas
 
 #### Día 4-5: Sistema de Sesiones
 **Tarea S1-004: Backend de sesiones**
