@@ -17,7 +17,12 @@ export interface SessionResponse {
 
 class SessionService {
   private baseUrl = '/api/sessions';
-  private isDemoMode = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  
+  // Forzar modo demo para la demostración
+  private get isDemoMode(): boolean {
+    // Siempre usar modo demo hasta que tengamos backend real
+    return true;
+  }
 
   async createSession(data: CreateSessionRequest): Promise<SessionResponse> {
     // Usar mock service en modo demo
