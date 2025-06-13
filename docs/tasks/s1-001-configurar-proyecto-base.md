@@ -7,13 +7,13 @@
 Configurar la estructura base del proyecto con Next.js 14, TypeScript y Tailwind CSS siguiendo las convenciones establecidas.
 
 ## Criterios de Aceptación
-- [ ] Repositorio GitHub creado y configurado
-- [ ] Next.js 14 con App Router funcionando
-- [ ] TypeScript configurado estrictamente
-- [ ] Tailwind CSS instalado y funcionando
-- [ ] ESLint + Prettier configurados
-- [ ] Estructura de carpetas según convenciones
-- [ ] Primer commit realizado
+- [x] Repositorio GitHub creado y configurado
+- [x] Next.js 14 con App Router funcionando
+- [x] TypeScript configurado estrictamente
+- [x] Tailwind CSS instalado y funcionando
+- [x] ESLint + Prettier configurados
+- [x] Estructura de carpetas según convenciones
+- [x] Primer commit realizado
 
 ## Pasos de Implementación
 
@@ -217,11 +217,12 @@ rm src/app/page.module.css
 ```
 
 ## Validación
-- [ ] `npm run dev` inicia servidor sin errores
-- [ ] `npm run build` compila exitosamente  
-- [ ] `npm run lint` no muestra errores
-- [ ] `npm run type-check` pasa sin errores
-- [ ] Tailwind classes funcionan en página básica
+- [x] `npm run dev` inicia servidor sin errores
+- [x] `npm run build` compila exitosamente  
+- [x] `npm run lint` no muestra errores
+- [x] `npm run type-check` pasa sin errores
+- [x] Tailwind classes funcionan en página básica
+- [x] **BONUS**: Aplicación desplegada en Vercel: https://app-anime-henna.vercel.app
 
 ## Archivos a Crear/Modificar
 - `package.json` (dependencias y scripts)
