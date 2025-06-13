@@ -1,21 +1,26 @@
-import { SessionStatus, GamePhase } from '@prisma/client';
+import { 
+  Session as PrismaSession, 
+  SessionUser as PrismaSessionUser,
+  SessionStatus,
+  GamePhase 
+} from '@prisma/client';
 
-export interface Session {
-  id: string;
-  code: string;
-  status: SessionStatus;
-  phase: GamePhase;
-  maxUsers: number;
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Re-export Prisma types as our base types
+export type Session = PrismaSession;
+export type SessionUser = PrismaSessionUser;
 
-export interface SessionUser {
-  id: string;
-  sessionId: string;
-  userId: string;
-  nickname: string;
-  isReady: boolean;
-  joinedAt: Date;
-}
+// Re-export enums for convenience
+export { SessionStatus, GamePhase };
+
+// Derived types for specific use cases
+export type SessionWithUsers = Session & {
+  users: SessionUser[];
+};
+
+export type SessionSummary = Pick<Session, 'id' | 'code' | 'status' | 'phase' | 'createdAt'>;
+
+// Form data types
+export type CreateSessionData = Pick<Session, 'code' | 'expiresAt'>;
+export type JoinSessionData = Pick<SessionUser, 'nickname' | 'userId'> & {
+  sessionCode: string;
+};

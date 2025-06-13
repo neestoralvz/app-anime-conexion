@@ -1,31 +1,20 @@
-export interface Anime {
-  id: string;
-  title: string;
-  synopsis: string;
-  genre: string;
-  year: number | null;
-  imageUrl: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Anime as PrismaAnime, Selection as PrismaSelection, Rating as PrismaRating } from '@prisma/client';
 
-export interface Selection {
-  id: string;
-  sessionId: string;
-  userId: string;
-  animeId: string;
-  orderNum: number;
-  createdAt: Date;
-}
+// Re-export Prisma types as our base types
+export type Anime = PrismaAnime;
+export type Selection = PrismaSelection;
+export type Rating = PrismaRating;
 
-export interface Rating {
-  id: string;
-  sessionId: string;
-  userId: string;
-  animeId: string;
-  question1: number; // 1-4: Potencial de historia
-  question2: number; // 1-4: Mood personal
-  question3: number; // 1-4: Impulso de decisión
-  isSelfRating: boolean;
-  createdAt: Date;
-}
+// Derived types for specific use cases
+export type AnimeWithSelections = Anime & {
+  selections: Selection[];
+};
+
+export type AnimeWithRatings = Anime & {
+  ratings: Rating[];
+};
+
+export type AnimeListItem = Pick<Anime, 'id' | 'title' | 'synopsis' | 'genre' | 'year' | 'imageUrl'>;
+
+// Rating form data type
+export type RatingFormData = Pick<Rating, 'question1' | 'question2' | 'question3'>;

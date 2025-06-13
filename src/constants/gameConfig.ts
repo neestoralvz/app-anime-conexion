@@ -1,3 +1,5 @@
+import { SessionStatus, GamePhase } from '@prisma/client';
+
 export const GAME_CONFIG = {
   SELECTION_COUNT: 3,
   RATING_SCALE: {
@@ -12,16 +14,26 @@ export const GAME_CONFIG = {
   },
 } as const;
 
-export const SESSION_PHASES = {
-  SELECTION: 'SELECTION',
-  MATCHING: 'MATCHING',
-  RATING: 'RATING',
-  RESULTS: 'RESULTS',
-} as const;
+// Re-export Prisma enums for consistency
+export { SessionStatus, GamePhase };
 
-export const SESSION_STATUS = {
-  WAITING: 'WAITING',
-  ACTIVE: 'ACTIVE',
-  COMPLETED: 'COMPLETED',
-  EXPIRED: 'EXPIRED',
-} as const;
+// Helper functions for enum values
+export const getSessionStatusLabel = (status: SessionStatus): string => {
+  const labels: Record<SessionStatus, string> = {
+    [SessionStatus.WAITING]: 'Esperando usuarios',
+    [SessionStatus.ACTIVE]: 'Juego en progreso',
+    [SessionStatus.COMPLETED]: 'Terminado',
+    [SessionStatus.EXPIRED]: 'Expirado',
+  };
+  return labels[status];
+};
+
+export const getGamePhaseLabel = (phase: GamePhase): string => {
+  const labels: Record<GamePhase, string> = {
+    [GamePhase.SELECTION]: 'Selección secreta',
+    [GamePhase.MATCHING]: 'Detección de coincidencias',
+    [GamePhase.RATING]: 'Evaluación cruzada',
+    [GamePhase.RESULTS]: 'Resultados',
+  };
+  return labels[phase];
+};
